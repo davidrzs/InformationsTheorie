@@ -104,7 +104,7 @@
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \usepackage[framemethod=TikZ]{mdframed}
-\newenvironment{method}[1]{\begin{mdframed}[backgroundcolor=blue!10,innertopmargin=15pt, innerbottommargin=15pt,nobreak=true]
+\newenvironment{defn}[1]{\begin{mdframed}[backgroundcolor=blue!10,innertopmargin=15pt, innerbottommargin=15pt,nobreak=true]
 		\textbf{#1 }
 	}
 	{ 
@@ -125,7 +125,7 @@
 	\end{mdframed}
 }
 
-\newenvironment{thm}[1]{\begin{mdframed}[backgroundcolor=pink!20,innertopmargin=15pt, innerbottommargin=15pt, nobreak=true]
+\newenvironment{thm}[1]{\begin{mdframed}[backgroundcolor=Emerald!10,innertopmargin=15pt, innerbottommargin=15pt, nobreak=true]
 		\textbf{#1 }
 	}
 	{ 
@@ -172,28 +172,32 @@
 \begin{multicols}{3}
 
 
+
+\textit{Diese Zusammenfassung fasst die wichtigsten Definitionen und Theoreme der Informationstheorie Vorlesung gehalten von Dr. Luis Haug im Frühling 2020 zusammen. Alle Beweise finden sich entweder im Skript oder den Übungen und wurden hier weggelassen.}
+
+
 \section{Entropie}
 
 
 Die Entropie misst die Unsicherheit über den Wert eine Zufallsvariable $X$ bevor wir ihn erfahren.
 
-\begin{method}{Entropie einer Zufallsvariable}
+\begin{defn}{Entropie einer Zufallsvariable}
 Sei $X:\Omega \to \mathcal{X}$ mit Verteilung $P_X$ so dass $H(X) = H(P_X)$ so gilt
 
 \begin{align*}
 	H(X) := - \sum_x P_X(x) \log P_X(x)
 \end{align*}
-\end{method}
+\end{defn}
 
-\begin{method}{Gemeinsame Entopie}
+\begin{defn}{Gemeinsame Entopie}
 Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathcal{X}$ sowie $Y\to \mathcal{Y}$ mit gemeinsamer Verteilung $P_{X,Y}$ ist
 
 \begin{align*}
 	H(X,Y) = - \sum_{x,y} P_{X,Y} (x,y) \log P_{X,Y} (x,y)
 \end{align*}
-\end{method}
+\end{defn}
 
-\begin{method}{Entropie bedingter Verteilung}
+\begin{defn}{Entropie bedingter Verteilung}
 	Für $y\in Y(\Omega)$ mit $P_Y(y) > 0$ haben wir die auf $Y=y$ bedingte Verteilung $P_{X|Y=y}$ mit 
 	\begin{align*}
 		P_{X|Y=y} &= P(X=x | Y = y) = \frac{P_{X,Y}(x,y)}{P_Y(y)}
@@ -205,9 +209,9 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 	H(X|Y=y) = - \sum_{x} P_{X|Y=y} (x) \log P_{X|Y=y} (x)
 	\end{align*}
 	was die Unsicherheit über $X$ misst wenn $Y=y$ bekannt ist.
-\end{method}
+\end{defn}
 
-\begin{method}{Bedingte Entropie}
+\begin{defn}{Bedingte Entropie}
 	Gegeben Zufallsvariablen $X,Y$ so definieren wir die bedingte Entropie von $X$ gegeben $Y$ als
 	
 	\begin{align*}
@@ -215,7 +219,7 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 	\end{align*}
 	
 	wobei $H(X|Y)$ der Erwartungswert von $H(X|Y=y)$ bezüglich aller möglichen $y$ ist.
-\end{method}
+\end{defn}
 
 \begin{thm}{Kettenregel}
 	Für jedes Paar an Zufallsvariablen $X,Y$ gilt
@@ -223,7 +227,7 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 		H(X|Y) + H(Y) = H(X,Y) = H(Y|X) + H(X)
 	\end{align*}
 \end{thm}
-\begin{method}{Wechselseitige Information}
+\begin{defn}{Wechselseitige Information}
 	Wir definieren 
 	
 	\begin{align*}
@@ -239,7 +243,7 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 	\end{align*}
 	
 
-\end{method}
+\end{defn}
 
 
 	\begin{thm}{Satz zur wechselseitigen Information}
@@ -247,17 +251,105 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 \end{thm}
 
 
-\begin{method}{Kullback Leibler Divergenz}
-	Die Kullback Leibler Divergenz zwischen zwei Zufallsvariablen $P,Q$ ist definiert durch
+\begin{defn}{Kullback-Leibler-Divergenz}
+	Die Kullback-Leibler-Divergenz zwischen zwei Zufallsvariablen $P,Q$ ist definiert durch
 	
 	\begin{align*}
 		D_{KL} (P||Q) = -\sum_{\omega}P(\omega) \log\left( \frac{Q(\omega)}{P(\omega)} \right) = \E \left[\log\frac{P}{Q}\right]
 	\end{align*}
-\end{method}
+\end{defn}
 
 \begin{thm}{Gibbs Ungleichung}
 	Es gilt $D_{KL}(P||Q)\geq 0 $ mit Gleichheit genau dann wenn $P=Q$.
 \end{thm}
+
+
+
+\section{Quellcodierung}
+
+
+\begin{defn}{Quellcode} Ein Quellcode über einem Alphabet $\mathcal{D}$ für eine Menge $\mathcal{X}$ ist eine Abbildung $C:\mathcal{X} \to \mathcal{D}^*$. Dabei ist $C(x)$ ein Codewort für $x\in \mathcal{X}$. Die Länge von $C(x)$ wird als $l_C(x)$ bezeichnet.
+\end{defn}
+
+\textbf{Ziel:} Wir möchte gerne die erwartete Länge eines Codes $C$
+
+\begin{equation*}
+L_C = \E[l_C] = \sum_{x\in X(\Omega)} P_X(x) l_C(x)
+\end{equation*}
+so klein wie möglich haben.
+
+
+
+
+\begin{defn}{Eigenschaften von Codes}
+	\begin{itemize}
+		\item Ein Code $C$ heisst \textbf{nicht degeneriert}, falls $$x_i \neq x_j \implies C(x_i) \neq C(x_j) \quad \forall i\neq j$$
+		\item Wir nennen $C$ \textbf{präfixfrei}, falls kein Codewort $C(x)$ ein Präfix eines anderen Codewortes ist.
+	\end{itemize}
+\end{defn}
+
+Wir erweitern nun den Code $C$ zu einem Code $C^*$ für welchen $C^*(x_1 \ldots x_n) \mapsto C(x_1)\ldots C(x_n)$ gilt. Wenn $C^*$ nicht degeneriert ist, so nennen wir $C^*$ \textbf{eindeutig dekodierbar}.
+
+\begin{thm}{Kraft Ungleichung}
+\begin{itemize}
+	\item Für jeden Präfixfreien Code $C:{X}(\Omega)\to \{0,1\}^*$ gilt 
+	
+	$$\sum_{x \in X(\Omega)} 2^{-l_C(x)} \leq 1$$
+	
+	\item Falls eine Funktion $l:X(\Omega)\to\N$ die Ungleichung
+	
+	$$\sum_{x\in X} 2^{-l(x)} \leq 1$$
+	
+	erfüllt, so existiert ein präfixfreier Code $C:X(\Omega) \to \{0,1\}^*$, so dass $l_C(x) = l(x)$.
+\end{itemize}
+\end{thm}
+
+\begin{defn}{Optimaler Code}
+	Wir nennen einen Code ${C'}:{X}(\Omega^) \to \{0,1\}^*$ optimal, falls für jeden anderen Code $C$ für $\mathcal{X}$ gilt $L_{C'} \leq L_C$. 
+\end{defn}
+
+
+\TODO{understand the proof of the following theorem}
+
+\begin{thm}{Minimale Länge eines präfixfreien Codes}
+Die erwartete Länge jedes präfixfreien Codes $C: X(\Omega) \to \{0,1\}^*$ erfüllt $L_C \geq H(X)$. Um $L_C = H(X)$ zu erreichen muss $p_i = 2^{-l_i}$ für alle $i$ mit $l_i \in \N$ sein.
+\end{thm}
+
+\begin{thm}{Existenz fast optimaler Codes}
+		Jeder optimale präfixfreie Code $C':X(\Omega) \to \{0,1\}^*$ erfüllt 
+		
+		\begin{align*}
+			H(X) \leq L_{C'} < H(X) + 1
+		\end{align*}
+		
+		Diese Schranke erreichen wir indem wir indem wir $l_i := \lceil -\log p_i \rceil$ fordern.
+		
+		Wenn wir jeweils Blöcke der Länge $N$ Codieren so gilt 
+		
+		\begin{align*}
+			H(X) \leq \frac{1}{N} L_{C_N} < H(X) + \frac{1}{N}
+ 		\end{align*}
+womit insbesondere $\lim_{N\to \infty} L_{C_N} = H(X)$.
+
+\end{thm}
+
+
+\begin{thm}{Codes bezüglich falscher Verteilung}
+	Wenn wir einen optimalen Code $C_q$ mit $l_{C_q}(x_i) = \lceil-\log q(x_i) \rceil$ verwenden um eine Eingabe mit der Verteilung $p$ zu Enkodieren so gilt
+	
+	\begin{align*}
+		H(X) + D_{KL}(p||q) \leq \E_p[l_{C_q}] < H(X) + D_{KL}(p||q)  + 1
+	\end{align*} 
+	
+	Wir bezahlen demnach also eine Strafe von $D_{KL}(p||q)$.
+	
+\end{thm}
+
+
+
+
+
+
 
 
 \newpage
