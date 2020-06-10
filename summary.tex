@@ -73,7 +73,7 @@
 \author{\large{David Zollikofer}}
 %END TITLE
 
-\usepackage{palatino}
+
 %\usepackage{eulervm}
 \usepackage{mathpazo}
 % begin custom commands
@@ -103,8 +103,8 @@
 
 
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\usepackage[framemethod=TikZ]{mdframed}
-\newenvironment{defn}[1]{\begin{mdframed}[backgroundcolor=blue!10,innertopmargin=15pt, innerbottommargin=15pt,nobreak=true]
+\usepackage[framemethod=latex]{mdframed}
+\newenvironment{defn}[1]{\begin{mdframed}[backgroundcolor=blue!10,innertopmargin=15pt, nobreak=true,innerbottommargin=15pt]
 		\textbf{#1 }
 	}
 	{ 
@@ -125,7 +125,7 @@
 	\end{mdframed}
 }
 
-\newenvironment{thm}[1]{\begin{mdframed}[backgroundcolor=Emerald!10,innertopmargin=15pt, innerbottommargin=15pt, nobreak=true]
+\newenvironment{thm}[1]{\begin{mdframed}[nobreak=true,backgroundcolor=Emerald!10,innertopmargin=15pt, innerbottommargin=15pt]
 		\textbf{#1 }
 	}
 	{ 
@@ -333,21 +333,145 @@ womit insbesondere $\lim_{N\to \infty} L_{C_N} = H(X)$.
 
 \end{thm}
 
-
+ 
 \begin{thm}{Codes bezüglich falscher Verteilung}
-	Wenn wir einen optimalen Code $C_q$ mit $l_{C_q}(x_i) = \lceil-\log q(x_i) \rceil$ verwenden um eine Eingabe mit der Verteilung $p$ zu Enkodieren so gilt
+		Wenn wir einen optimalen Code $C_q$ mit $l_{C_q}(x_i) = \lceil-\log q(x_i) \rceil$ verwenden um eine Eingabe mit der Verteilung $p$ zu Enkodieren so gilt
 	
 	\begin{align*}
 		H(X) + D_{KL}(p||q) \leq \E_p[l_{C_q}] < H(X) + D_{KL}(p||q)  + 1
 	\end{align*} 
-	
 	Wir bezahlen demnach also eine Strafe von $D_{KL}(p||q)$.
 	
 \end{thm}
 
 
+\begin{defn}{Konstruktion von Huffman-Codes}
+	Für eine Verteilung von $X$ gegeben durch $\vec{p} = (p_1,\ldots,p_n)$ konstruieren wir einen Huffman-Code rekursiv:
+	\begin{itemize}
+		\item Wähle die zwei kleinsten Wahrscheinlichkeiten $p_i$ und $p_j$.
+		\item Wähle beide als Blätter und baue einen Baum aus drei Knoten wobei der Elternknoten die Wahrscheinlichkeit $p' = p_i + p_j$ hat. Gebe dem einen Kind $p_i$ den Präfix $1$, dem anderen $p_j$ den Präfix $1$.
+		\item Entferne $p_i,p_j$ aus $\vec{p}$ und füge $p'$ zu $\vec{p}$ als neues Ereignis hinzu.
+		\item Iteriere bis $\vec{p}$ nur noch ein Element hat mit $p_i = 1$, der Baum der zu dieser Wahrscheinlichkeit gehört ist der Huffman-Baum
+	\end{itemize}
+\end{defn}
+
+\begin{thm}{Optimalität von Huffman-Codes}
+Sei ${C_H}$ ein Huffman-Code für eine Zufallsvariable $X$ und sei $C^*$ ein optimaler präfixfreier Code für $X$, so ist $C_H$ ebenfalls ein optimaler Code für $X$ da gilt:
+\begin{align*}
+	L_{C_H} &= L_{C^*}
+\end{align*}
+\end{thm}
+
+\begin{thm}{McMillan Ungleichung}
+Jeder eindeutig dekodierbare Code $C:\mathcal{X}\to \{0,1\}^*$ erfüllt die Kraftungleichung
+\begin{align*}
+	\sum_{x\in\mathcal{X}} 2^{-l_C (x)} \leq 1
+\end{align*}
+\end{thm}
+
+Daher folgt, dass es eigentlich reicht präfixfreie Codes anzuschauen, da allgemeine dekodierbare Codes die gleichen Eigenschaften haben.
+
+%\vfill\null
+%\columnbreak
+
+\begin{defn}{Typische Folgen}
+	Wir typische Ereignisse $\vec{x}$ auf $X^N$ Ereignisse die bei Erfolgswahrscheinlichkeit Bernoulli $p$ etwas mit Wahrscheinlichkeit $p^{pN} (1-p)^{(1-p)N}$ vorkommen.
+	
+	Für ein solche solches $\vec{x}$ gilt dann
+	\begin{align*}
+		-\frac{1}{N} \log P(\vec{x}) = - \frac{1}{N} \log \left( p^{pN} (1-p)^{(1-p)N}\right) = H(p,1-p)
+	\end{align*} 
+\end{defn}
 
 
+\begin{defn}{Typische Menge}
+	
+	Für $\epsilon, N$ gegeben ist die typische Menge
+	
+	\begin{align*}
+		T_{N,\epsilon} &= \bigg\{ \vec{x} \in \mathcal{X}^N |  \left| -\frac{1}{N}\log P(\vec{x}) - H(X) \right|  \leq \epsilon \bigg \}\\
+		&= \bigg\{ \vec{x} \in \mathcal{X}^N | 2^{-N(H(X)+\epsilon)} < P(\vec{x}) < 2^{-N(H(X)-\epsilon)} \bigg \}
+	\end{align*}
+\end{defn}
+
+
+\begin{thm}{Asymptotische Gleichverteilungseigenschaft}
+	Falls die Zufallsvariablen $X,X_1,\ldots,x_n:\Omega\to \mathcal{X}$ i.i.d. sind, so gilt
+	\begin{align*}
+P\left( \left| -\frac{1}{N}\log P(X_1,\ldots,X_n) - H(X) \right|  > \epsilon \right) \to 0  \text{ für } N \to \infty
+	\end{align*}
+	
+	Als Korollare folgen
+	\begin{enumerate}
+		\item $P(T_{N,\epsilon}) \to 1$ für $N \to \infty$
+		\item $|T_{N,\epsilon}| < 2^{N(H(X) + \epsilon)}$
+		\item $|T_{N,\epsilon}| > (1-\delta)2^{N(H(X)) - \epsilon}$ für jedes $\delta \in (0,1)$ und $N \gg 1$.
+	\end{enumerate}
+\end{thm}
+
+
+\begin{defn}{Datenkompression via AEP}
+Wir codieren mit Blockcode $C:\mathcal{X}^N \to \{0,1\}^*$ mit 
+\begin{align*}
+	C(x) \mapsto \begin{cases}
+	"1" + \{0,1\}^{\lceil N(H(X) + \epsilon) \rceil} \ \text{ für } x \in T_{N,\epsilon}\\
+	"0" + \{0,1\}^{N\log |\mathcal{X}|}
+	\end{cases}
+\end{align*}
+für diesen Code gilt $L_C \leq N(H(X) + \epsilon')$ was pro Symbol eine Länge von $H(X)$ gibt bei grossem $N$.
+\end{defn}
+
+
+
+\begin{thm}{Shannon's Quellcodierungstheorem} Sei $H_\delta(X)$ die kleinste Anzahl an Bits um eine Menge $S_\delta$ mit $P(S_\delta)\geq 1-\delta$ zu beschreiben, dann gilt für alle $\epsilon > 0$ und $\delta\in (0,1)$ dass es ein $N_0 \in \N$ gibt, so dass für alle $N \geq N_0$
+	
+	\begin{align*}
+\left|\frac{1}{N} H_{\delta} (X^N) - H(X) \right| < \epsilon
+	\end{align*}
+gilt. Dies hat zwei Konsequenzen:
+
+\begin{itemize}
+	\item Wir brauchen nur $H(X)$ Bits pro Symbol
+	\item Auch wenn wir eine hohe Fehlerwahrscheinlichkeit in Kauf nehmen ($\delta$ gross), so benötigen wir immer noch $H(X)$ Bits für die Elemente in $S_\delta$.
+\end{itemize}
+
+\end{thm}
+
+
+
+\begin{defn}{Lempel-Ziv-Codes}
+	\textit{Enkodieren:}	Wir möchten kodieren und kennen die Auftretwahrscheinlichkeiten noch nicht. Dafür nehmen wir einen Eingabestring und bauen nach jedem Substring den wir noch nicht gesehen haben $|$ ein.
+	
+	\texttt{|1|0|11|01|010|00|10}
+	
+	Daraus bauen wir das Wörterbuch
+	
+{
+	\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+	\hline
+	Wort & $\lambda$ & \texttt{1} & \texttt{0}  & \texttt{11} & \texttt{01} & \texttt{010} & \texttt{00} & \texttt{10} \\
+	\hline
+	$s(n)$& 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+	\hline
+	 $s_{bin}(n)$ & 000 & 001 & 010 & 011 & 100 & 101 & 110 & 111 \\
+	\hline
+	(ptr,bit) & & (,1) & (0,0) & (01,1) & (10,1) & (100,0) & (010,0) & (001,0)\\ 
+	\hline
+\end{tabular}}
+Dabei habe wir den Pointer jeweils $\lceil \log_2 s(n) \rceil$ lang gemacht, sowie den ersten Pointer weggelassen.
+
+Das Resultat wäre dann \texttt{100011101100001000010}
+
+
+\textit{Dekodieren:} Wir nehmen den String und unterteilen ihn in jeweils $2^{k-2}$ Phrasen der Länge $k$, wobei wir das erste Bit separat betrachten.
+
+Dies gibt \texttt{1|00|011|101|1000|0100|0010}
+Hierbei ist das letzte Bit im Block das neue Bit und alle vorhergehenden sind Pointer.
+\end{defn}
+
+\textbf{Zusammenfassung}
+
+Alle kennengelernten Kodierungsverfahren sind optimal!
 
 
 
