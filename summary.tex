@@ -10,6 +10,7 @@
 \usepackage{epsfig}
 \usepackage{amsmath}
 \usepackage{amssymb}
+
 \usepackage[german]{babel}
 \usepackage{geometry}
 \usepackage{multicol}
@@ -43,7 +44,7 @@
 %BEGIN LISTINGDEF
 
 
-
+\newtheorem*{lem}{Lemma}
 
 
 \newcommand*\widefbox[1]{\fbox{\hspace{2em}#1\hspace{2em}}}
@@ -345,7 +346,7 @@ womit insbesondere $\lim_{N\to \infty} L_{C_N} = H(X)$.
 \end{thm}
 
 
-\begin{defn}{Konstruktion von Huffman-Codes}
+\paragraph{Konstruktion von Huffman-Codes}
 	Für eine Verteilung von $X$ gegeben durch $\vec{p} = (p_1,\ldots,p_n)$ konstruieren wir einen Huffman-Code rekursiv:
 	\begin{itemize}
 		\item Wähle die zwei kleinsten Wahrscheinlichkeiten $p_i$ und $p_j$.
@@ -353,7 +354,7 @@ womit insbesondere $\lim_{N\to \infty} L_{C_N} = H(X)$.
 		\item Entferne $p_i,p_j$ aus $\vec{p}$ und füge $p'$ zu $\vec{p}$ als neues Ereignis hinzu.
 		\item Iteriere bis $\vec{p}$ nur noch ein Element hat mit $p_i = 1$, der Baum der zu dieser Wahrscheinlichkeit gehört ist der Huffman-Baum
 	\end{itemize}
-\end{defn}
+
 
 \begin{thm}{Optimalität von Huffman-Codes}
 Sei ${C_H}$ ein Huffman-Code für eine Zufallsvariable $X$ und sei $C^*$ ein optimaler präfixfreier Code für $X$, so ist $C_H$ ebenfalls ein optimaler Code für $X$ da gilt:
@@ -438,8 +439,46 @@ gilt. Dies hat zwei Konsequenzen:
 \end{thm}
 
 
+\paragraph{Arithmetische Codes}
+Wir fügen unserem Alphabet $\{s_1,\ldots ,s_{M-1}\}$ das ein end-of-file symbol $s_M = \square$ hinzu.
 
-\begin{defn}{Lempel-Ziv-Codes}
+Angenommen wir haben ein probabilistisches Modell $P(X_N = s_i | X_1, \ldots X_{N-1})$ 
+
+Wir starten mit $[0,1)$ und bauen rekursive Intervalle $I_m$ mit der Länge von $I_m = P(X_1 = s_m)$. Nun unterteilen wir $I_m$ wieder in $I_{m,m'}$ mit der Länge von $I_{m,m'}$ proportional zu $P(X_2 = s_{m'} | X_1 = s_m)$. (Dies wiederholen wir nun rekursiv).
+
+Wir kriegen somit Binärintervalle der Form 
+\begin{align} \label{binString}
+	\left[ \sum_{i=1}^{N} b_i 2^{-i},2^{-N} \sum_{i=1}^{N} b_i 2^{-i} \right), \quad b_i \in \{0,1\}
+\end{align}
+Dabei nutzen wir nun den String der Binärzahl $ \sum_{i=1}^{N} b_i 2^{-i}$ als Code für ein Wort das in dieses Intervall fällt.
+
+
+Dabei sind:
+
+\begin{itemize}
+	\item $B_i$ ein Intervall das durch einen Binärstring $b_i$ beschrieben wird nach (\ref{binString})
+	\item $I_n$ ein Intervall nach rekursiver Definition durch Wahrscheinlichkeiten.
+\end{itemize}
+
+
+Dabei gilt:
+
+
+\begin{lem}
+	Seien $\vec{x}, \vec{x}' \in \{s_1,\ldots,s_m\}^*$. Es gilt $I_{\vec{x}'} \subseteq I_{\vec{x}}$ gdw. $\vec{x}$ ein Präfix von $\vec{x}'$ ist.
+\end{lem}
+
+\begin{lem}
+	Seien $\vec{x}, \vec{x}' \in \{s_1,\ldots,s_m\}^*$ und $\vec{b}, \vec{b}' \in \{0,1\}^*$ mit
+	\begin{align*}
+		I_{\vec{x}'} &\subset B_{\vec{b}'} & B_{\vec{b}} &\subset I_{\vec{x}}
+	\end{align*}
+	Falls $\vec{x}'$ ein Präfix von $\vec{x}$ ist, dann ist $\vec{b}'$ ein Präfix von $\vec{b}$.
+\end{lem}
+Dies erlaubt uns schon während des Empfangs des Codeworts mit dekodieren zu beginnen.
+
+
+\paragraph{Lempel-Ziv-Codes}
 	\textit{Enkodieren:}	Wir möchten kodieren und kennen die Auftretwahrscheinlichkeiten noch nicht. Dafür nehmen wir einen Eingabestring und bauen nach jedem Substring den wir noch nicht gesehen haben $|$ ein.
 	
 	\texttt{|1|0|11|01|010|00|10}
@@ -467,14 +506,14 @@ Das Resultat wäre dann \texttt{100011101100001000010}
 
 Dies gibt \texttt{1|00|011|101|1000|0100|0010}
 Hierbei ist das letzte Bit im Block das neue Bit und alle vorhergehenden sind Pointer.
-\end{defn}
 
-\textbf{Zusammenfassung}
+
+\paragraph{Zusammenfassend}
 
 Alle kennengelernten Kodierungsverfahren sind optimal!
 
 
-
+\section{Kanalkodierung}
 
 \newpage
 
