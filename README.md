@@ -1,4 +1,4 @@
-# Zusammenfassung für die Vorlesung Informationstheorie
+# Informationstheorie Zusammenfassung
 
 Diese Zusammenfassung beinhaltet die wichtigen Definitionen, Theoreme und Algorithmen der [Vorlesung Informationstheorie an der ETH Zürich](http://www.vvz.ethz.ch/Vorlesungsverzeichnis/lerneinheit.view?lang=en&lerneinheitId=135678&semkez=2020S&ansicht=KATALOGDATEN&), gehalten von Dr. Luis Haug.
 
