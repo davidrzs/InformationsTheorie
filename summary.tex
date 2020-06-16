@@ -293,7 +293,7 @@ Wir erweitern nun den Code $C$ zu einem Code $C^*$ für welchen $C^*(x_1 \ldots 
 
 \begin{thm}{Kraft Ungleichung}
 \begin{itemize}
-	\item Für jeden Präfixfreien Code $C:{X}(\Omega)\to \{0,1\}^*$ gilt 
+	\item Für jeden präfixfreien Code $C:{X}(\Omega)\to \{0,1\}^*$ gilt 
 	
 	$$\sum_{x \in X(\Omega)} 2^{-l_C(x)} \leq 1$$
 	
@@ -424,7 +424,7 @@ für diesen Code gilt $L_C \leq N(H(X) + \epsilon')$ was pro Symbol eine Länge 
 
 
 
-\begin{thm}{Shannon's Quellcodierungstheorem} Sei $H_\delta(X)$ die kleinste Anzahl an Bits um eine Menge $S_\delta$ mit $P(S_\delta)\geq 1-\delta$ zu beschreiben, dann gilt für alle $\epsilon > 0$ und $\delta\in (0,1)$ dass es ein $N_0 \in \N$ gibt, so dass für alle $N \geq N_0$
+\begin{thm}{Shannons Quellcodierungstheorem} Sei $H_\delta(X)$ die kleinste Anzahl an Bits um eine Menge $S_\delta$ mit $P(S_\delta)\geq 1-\delta$ zu beschreiben, dann gilt für alle $\epsilon > 0$ und $\delta\in (0,1)$ dass es ein $N_0 \in \N$ gibt, so dass für alle $N \geq N_0$
 	
 	\begin{align*}
 \left|\frac{1}{N} H_{\delta} (X^N) - H(X) \right| < \epsilon
@@ -514,6 +514,157 @@ Alle kennengelernten Kodierungsverfahren sind optimal!
 
 
 \section{Kanalkodierung}
+
+
+\begin{defn}{Disreter gedächtnisloser Kanal}
+	Ein diskreter gedächtnisloser Kanal besteht aus einem Eingabealphabet $\mathcal{X}$, einem Ausgabealphabet $\mathcal{Y}$ und einer Familie $(P(\cdot|x))_{x\in \mathcal{X}}$ von Verteilungen auf $\mathcal{Y}$
+	
+	Dabei heisst Gedächtnislos, dass das soeben Empfangene Bit nicht von früheren abhängt, wobei $P(x|y)$ für die Wahrscheinlichkeit, dass $x$ empfangen wird, wenn $y$ gesendet wurde.
+\end{defn}
+
+\begin{defn}{Kanalkapazität}
+	Wenn $H(X)$ an Entropie gesendet wird und wir $H(Y)$ empfangen, so wollen wir die Unsicherheit $H(X|Y)$ möglichst klein halten. Da $H(X) - H(X|Y) = I(X;Y)$ definieren wir die Kapazität $C$ eines Kanals
+	
+	\begin{align*}
+		C = \max_{P_X}I(X;Y)
+	\end{align*}
+\end{defn}
+
+
+\subsection*{Beispiele von Kanälen}
+
+\paragraph{Binärer symmetrischer Kanal}
+Der Kanal hat nur \texttt{0} und \texttt{1} als Zustand wobei die Chance dass ein Bit falsch übetragen wird symmetrisch bei $p$ liegt.
+
+Es gilt dabei $I(X;Y) = H(X) - H(X|Y) = H(X) - \sum_{y}P(y) H(p,1-p) \leq 1 - H(p,1-p)$ mit $H(p,1-p) = -p\log p - (1-p)\log(1-p)$ und $H(X)\leq \log(2)=1$. Bei Gleichverteilung von $X$ ist $C = 1 - H(p,1-p)$.
+
+\paragraph{Disjunkte Ausgabe}
+Die Ausgabe des Kanals ist nicht überlappend und die Eingabe kann rekonstruiert werden: $C = 1$.
+
+\paragraph{Binärer Auslöschungskanal}
+Ein Signal wir zwar nie vertauscht aber es kann sein dass ein \texttt{?} empfangen wird und das Signal nicht mehr zugeordnet werden kann. (Bit wird mit Wahrsch. $p$ gelöscht.). Dann gilt $I(X;Y) = H(X) - H(X|Y) = H(X) - \sum_{y} P(y) H(X|Y=y) = H(X) - P(Y=?)H(X|Y=?) = (1-p)H(X) \leq 1-p$. Daraus folgt $C = 1-p$
+
+\paragraph{Verrauschte Schreibmaschine}
+Die verrauschte Schreibmaschine hat $\mathcal{X} = \{A,\ldots Z,\square\}$ als Eingabealphabet wobei für den $i$-ten Buchstaben je eine $1/3$ Chance besteht auf den $i-1$-ten, $i$-ten oder $i+1$-ten Buchstaben verrauscht zu werden.
+\TODO{es gilt C = $\log(9)$}
+
+
+
+
+
+
+\begin{thm}{Eigenschaften der Kanalkapazität}
+	Für jeden Kanal gilt
+	\begin{itemize}
+		\item $C \geq 0$, da $I(X;Y)\geq 0$
+		\item $C \leq \log |\mathcal{X}|$
+		\item $C \leq \log |\mathcal{Y}|$
+		\item Es gibt ein $P_X$ so dass $C = \max_{P_X} I(X;Y)$ angenommen wird.
+	\end{itemize}
+\end{thm}
+
+
+
+\begin{defn}{$N$-te Kanalerweiterung}
+Für einen Kanal $(\mathcal{X},\mathcal{Y}, P_{Y|X})$ ist die $N$-ter Erweiterung der Kanal $(\mathcal{X}^N, \mathcal{Y}^N, P_{Y^N|X^N})$ mit\begin{align*}
+	P_{Y^N | X^N} = \prod_{i=1}^{N} P_{Y|X}(y_i|x_i)
+\end{align*}
+\end{defn}
+
+
+
+\begin{defn}{$(M,N)$-Codes} Eine Menge $\{\vec{x}_1,\ldots, \vec{x}_M\} \subset \mathcal{X}^N$ nennen wir eine Codebuch eines $(M,N)$ Codes. Demnach also $M$ Codewörter der Länge $N$.
+	
+Wir definieren die Rate $R$ eines Codes als
+
+\begin{align*}
+	R &= \frac{\log_{|\mathcal{X}|} M }{N}
+\end{align*}
+
+\end{defn}
+
+
+
+\begin{defn}{Dekodierer}
+	Eine Abbildung $\hat{s}:\mathcal{Y}^N \to \{0,\ldots,M\}$ nennen wir Dekodierer. Dabei dekodiert sie ein empfangenen String in ein Codewort.
+\end{defn}
+
+\begin{defn}{Blockfehlerwahrscheinlichkeit}
+	Für einen $(M,N)-Code$ und einen Dekodierer $\hat{s}$ sowie $s\in \{0,\ldots,M\}$ definieren wir die Blockfehlerwahrscheinlichkeit als
+	
+	\begin{align*}
+		\lambda_s = P (\hat{s}(Y^N)\neq s | X^N = \vec{x}_s)
+	\end{align*}
+	also der Chance, dass wenn das $s$-te Codewort gesendet wurde, dass wir es nicht richtig dekodieren können.
+	Die maximale Blockfehlerwahrscheinlichkeit ist dabei \begin{align*}
+		\lambda_{max} = \max_{s\in\{1,\ldots,M\}} \lambda_s
+	\end{align*}
+\end{defn}
+
+
+\begin{defn}{Erreichbare Rate}
+	Eine Rate heisst erreichbar für einen Kanal, falls eine Folge von $(\lceil  2^{NR}\rceil,N)$-Codes mit Dekodierer gibt, so dass\begin{align*}
+		 \lambda_{max}^{(N)} \stackrel{N \to \infty}{\longrightarrow} 0
+	\end{align*}
+\end{defn}
+
+
+
+\begin{defn}{Gemeinsam Typische Sequenzen}
+	Für einen Kanal $(\mathcal{X}, \mathcal{Y}, P_{Y|X})$ sowie einer Verteilung $P(\vec{x}, \vec{y})$ definieren wir die Menge der gemeinsam typischen Sequenzen $(\vec{x},\vec{y}) \in \mathcal{X}^N \times \mathcal{Y}^N$ für ein $\epsilon > 0$ als 
+	
+	\begin{align*}
+		T_{N,\epsilon}^{X,Y} = \{(\vec{x}, \vec{y}) \in \mathcal{X}^N \times \mathcal{Y}^N \mid &\left|-\frac{1}{N}\log(P(\vec{x})) - H(X)\right| < \epsilon \land \\
+		&\left|-\frac{1}{N}\log(P(\vec{y})) - H(Y)\right| < \epsilon \land\\
+		&\left|-\frac{1}{N}\log(P(\vec{x},\vec{y})) - H(X,Y)\right| < \epsilon\}
+	\end{align*}
+\end{defn}
+
+
+
+\begin{thm}{Gemeinsame AEP}
+	Für $(X^N, Y^N)$ Zufallsvariablen mit Werten in $\mathcal{X}^N \times \mathcal{Y}^N$ mit Verteilung $P_{X,Y}(\vec{x},\vec{y})$, dann gilt
+	\begin{itemize}
+		\item $P((X^N, Y^N) \in T_{N,\epsilon}^{X,Y}) \to 1$ für $N \to \infty$
+		\item $|T_{N,\epsilon}^{X,Y}| \leq 2^{N(H(X,Y) + \epsilon)}$
+		\item Für $\tilde{X}^N, \tilde{Y}^N$ unabhängige Zufallsvariablen mit $P_{\tilde{X}^N} = P_{X^N}$ und  $P_{\tilde{Y}^N} = P_{Y^N}$ gilt
+		\begin{align*}
+P((\tilde{X}^N, \tilde{Y}^N) \in T_{N,\epsilon}^{X,Y}) \leq 2^{-N(I(X;Y)-3\epsilon)}
+		\end{align*}
+		Für ein genügend grosses $N\gg 1$ gilt zudem
+		\begin{align*}
+					P((\tilde{X}^N, \tilde{Y}^N) \in T_{N,\epsilon}^{X,Y}) \geq (1-\epsilon) 2^{-N(I(X;Y) + 3 \epsilon)}
+		\end{align*} 
+	\end{itemize}
+\end{thm}
+
+Die gemeinsame AEP zeigt dass für ein beliebiges $(\vec{x}, \vec{y})\in \mathcal{X}^N\times \mathcal{Y}^N$ ist mit Wahrscheinlichkeit $2^{-NI(X;Y)}$ typisch.
+
+
+\begin{thm}{Shannons Kanalkodierungstheorem}
+	Für einen Kanal $(\mathcal{X},\mathcal{Y},P_{Y|X})$ mit Kapazität $C$.  Dann gilt:\begin{enumerate}
+		\item Jede Rate $R < C$ ist erreichbar mit einer Folge von $(\lceil2^{NR}\rceil,N)$-Codes so dass $\lambda_{max}^{N} \stackrel{N\to \infty}{\longrightarrow} 0$.
+		\item Für jede Folge von $(\lceil2^{NR}\rceil,N)$-Codes mit $\lambda_{max}^{N} \stackrel{N\to \infty}{\longrightarrow} 0$.
+	\end{enumerate}
+\end{thm}
+\textbf{Beweisskizze}
+\begin{enumerate}
+\item Wähle zufälligen Code. Dekodiere immer so dass $x$ gemeinsam typisch mit erhaltenem $y$. Nach gemeinsamem AEP geht Chance für Dekodierfehler nach 0, wenn $N \to \infty$.
+\item \TODO{todo}
+\end{enumerate}
+
+\begin{thm}{Fano Ungleichung}
+	Seien $S,\tilde{S}$ Zufallsvariablen mit Wertebereich $\mathcal{S}$. Sei $P_e = P(\tilde{S} \neq S)$. Es gilt
+	\begin{align*}
+		H(P_e,1-P_e) + P_e \log|\mathcal{S}| \geq H(S|\tilde{S})
+	\end{align*}
+\end{thm}
+
+
+
+
+
+
 
 \newpage
 
