@@ -89,7 +89,7 @@
 \newcommand{\Var}{\operatorname{Var}}
 \newcommand{\E}{\operatorname{E}}
 %\newcommand{\exp}{\operatorname{exp}}
-
+\newcommand{\C}{\mathcal{C}}
 \newcommand{\mc}{\mathcal}
 
 % some shortcuts
@@ -647,6 +647,9 @@ Die gemeinsame AEP zeigt dass für ein beliebiges $(\vec{x}, \vec{y})\in \mathca
 		\item Für jede Folge von $(\lceil2^{NR}\rceil,N)$-Codes mit $\lambda_{max}^{N} \stackrel{N\to \infty}{\longrightarrow} 0$.
 	\end{enumerate}
 \end{thm}
+
+Wir können also einen $(M,N)$-Code finden mit Rate $R = \frac{\log M }{N} \geq C-\epsilon$ sowie einer maximalen Blockfehlerwahrscheinlichkeit $\lambda_{max}\leq \epsilon$.
+
 \textbf{Beweisskizze}
 \begin{enumerate}
 \item Wähle zufälligen Code. Dekodiere immer so dass $x$ gemeinsam typisch mit erhaltenem $y$. Nach gemeinsamem AEP geht Chance für Dekodierfehler nach 0, wenn $N \to \infty$.
@@ -658,10 +661,89 @@ Die gemeinsame AEP zeigt dass für ein beliebiges $(\vec{x}, \vec{y})\in \mathca
 	\begin{align*}
 		H(P_e,1-P_e) + P_e \log|\mathcal{S}| \geq H(S|\tilde{S})
 	\end{align*}
+	Falls $S\to Y \to \hat{S}$ eine Markovkette bildet, so folgt
+	\begin{align*}
+		P_e \geq \frac{H(S|Y) - 1}{\log |\mathcal{S}|}
+	\end{align*}
 \end{thm}
 
 
 
+\TODO{fill in missing parts}
+
+
+
+
+\section{Grundlagen der Codierungstheorie}
+
+
+\begin{defn}{Hammingdistanz, Minimaldistanz}
+	\begin{itemize}
+		\item Die Hammingdistanz $d_H(x,x')$ zwischen zwei Wörtern $x,x'\in\mathcal{X}^N$ ist die Anzahl Positionen an welchen sie sich unterscheiden.
+		\item Die Minimaldistanz eines Codes $\mathcal{C}$ ist $$d_{min}(\mathcal{C}) =\min_{x,x'\in \mathcal{C}, x\neq x'} d_H(x,x')$$
+	\end{itemize}
+\end{defn}
+
+
+\begin{defn}{Linearer Code}
+	Ein linearer $(2^k,N)$ Code über $\mathbb{F}_2$ ist ein $K$-dimensionaler Unterraum von $\mathbb{F}_2^N$.
+\end{defn}
+
+\textbf{Beispiel}
+\begin{itemize}
+	\item $\{000,100,010,110\} \subset \mathbb{F}_2^3$ ist ein linearer $(4,3)$-Code.
+	\item $\{0000,1010,1001,0001\}$ ist kein linearer Code da $1001+1010=0011$ nicht enthalten ist.
+\end{itemize}
+
+\begin{defn}{Generatormatrix}
+	Für einen linearen $(2^K,N)$-Code können wir eine injektive lineare Abbildung $\mathbf{G}$, eine $(K\times N)$-Matrix so dass jedes Codewort $\mathbf{c}\in\C$ die Form $\mathbf{c} = \mathbf{G}^T \cdot \mathbf{a}$ für ein eindeutiges $\mathbf{a} \in \mathbb{F}_2^K$, welches wir enkodieren.
+\end{defn}
+
+Dabei bilden die Spalten von $\mathbf{G}^T$ eine Basis von $\C$. Dabei muss $\mathbf{G}$ nicht eindeutig bestimmbar sein.
+
+\begin{defn}{Systematische Generatorenmatrix}
+	Falls $\mathbf{G = (I_K,A)}$ für eine $K\times (N-K)$ Matrix $\mathbf{A}$ nennen wir $\mathbf{G}$ systematisch. Die Idee ist, dass wir ein $\mathbf{a}$ kodieren indem wir $\mathbf{A}\cdot a$ als Parity-Check-Bits anhängen.
+\end{defn}
+
+\begin{defn}{Parity-Check-Matrix}
+	Eine $(N-K\times N)$-Matrix $\mathbf{H}$ heisst Parity Check Matrix eines linearen Codes $\C$, falls $$\mathbf{c} \in \C \iff \mathbf{H\cdot c = 0}$$ 
+	Demnach spannt $\mathbf{H}$ das orthogonale Komplement von $\C$ auf
+\end{defn}
+
+
+\begin{thm}{Parity-Check-Matrix systematischer Generatormatrizen}
+	Wenn $\mathbf{G = (I_K,A)}$ eine systematische Generatormatrix für $\C$ ist, dann ist $\mathbf{H = (-A^T,I_{N-K})}$ eine Parity-Check-Matrix für $\C$.
+\end{thm}
+
+\begin{thm}{$\mathbf d_{min}(\C)$ aus $\mathbf{H}$ herausrechnen} Für einen \textit{linearen} Code $\C$ mit Parity-Check-Matrix $\mathbf{H}$ gilt
+	
+	 $$d_{min}(\C) = \min \{l \mid \mathbf{H} \text{ hat $l$ linear abhängige Spalten} \}$$
+\end{thm}
+
+
+\begin{defn}{Hamming Codes}
+	Für ein $N = 2^r-1$ und $K=n-r$ bauen wir die $(N-K)\times N$-Matrix $\mathbf{H}$, deren Spalten die $N$ von $\mathbf{0}$ verschiedenen Elemente in $\mathbb{F}_2^r$ sind. Durch umordnen der Spalten erhalten wir $\mathbf{H} = (-\mathbf{A}^T,\mathbf{I}_{N-K})$.
+	
+	Dabei ist nun $\mathbf{G = (I_k,A)}$ und definiert einen Code 
+	
+	$$\C = \{\mathbf{G^T\cdot a \mid a} \in \mathbb{F}_2^K\}\subset \mathbb{F_2^N}$$
+	
+	Nach Konstruktion von $\mathbf{G}$ gilt $d_{min}(\C) = 3$. Nach MacKay ist dies ein $(7,4)$ Hamming-Code während Thomas \& Cover dies einen $(2^4,7)$ Hamming-Code nennen würden.
+\end{defn}
+
+\begin{thm}{Syndrom-Dkodierung linearer Codes}
+	Wenn wir $\mathbf{y = c+e}\in F_2^N$ empfangen, so nennen wir 
+	
+	\begin{align*}
+		\sigma = \mathbf{H\cdot (c+e)} = \mathbf{H\cdot c + H \cdot e} = \mathbf{H \cdot e} 
+	\end{align*}
+	das für den Fehlerterm $\mathbf{e}$ charakteristische Syndrom. Das Syndrom wird nach der Regel $\mathbf{e} = \operatorname{argmin}_{\mathbf{e}\in \mathbb{F}_2^N, \mathbf{He}=\sigma}w_H(e)$  geschätzt,
+	 
+\end{thm}
+
+
+
+\subsection{Reed-Solomon Codes}
 
 
 
