@@ -228,6 +228,19 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 		H(X|Y) + H(Y) = H(X,Y) = H(Y|X) + H(X)
 	\end{align*}
 \end{thm}
+
+\begin{thm}{Erweiterte Kettenregel}
+	Es gilt durch mehrfaches anwenden der Kettenregel, dass
+	
+	\begin{align*}
+		H(X_1,\ldots,X_n) &= H(X_1) + \sum_{i=2}^{n} H(X_i | X_1,\ldots X_{i-1})
+	\end{align*}
+	
+	Ausgeschrieben wäre dies:
+	$$H(X,Y,Z) = H(X) + H(Y|X) + H(Z|X,Y)$$
+\end{thm}
+
+
 \begin{defn}{Wechselseitige Information}
 	Wir definieren 
 	
@@ -235,7 +248,7 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 		I(X;Y) = H(X) - H(X|Y)
 	\end{align*}
 	
-	als die Reduktion der Unsicherheit über $X$ durch bekanntwerden von $Y$.
+	als die Reduktion der Unsicherheit über $X$ durch Bekanntwerden von $Y$.
 	
 	Aufgrund der Kettenregel gilt
 	
@@ -243,7 +256,6 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 		I(X;Y) &= H(X) + H(Y) - H(X,Y) = I(Y;X)
 	\end{align*}
 	
-
 \end{defn}
 
 
@@ -264,6 +276,30 @@ Die gemeinsame Entropie zweier Zufallsvariablen $(X,Y)$ mit $X:\Omega \to \mathc
 	Es gilt $D_{KL}(P||Q)\geq 0 $ mit Gleichheit genau dann wenn $P=Q$.
 \end{thm}
 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\linewidth]{overviewChpt1}
+	\caption{Übersicht der relevanten Grössen}
+	\label{fig:overviewchpt1}
+\end{figure}
+\begin{defn}{Bedingte Gegenseitige Information}
+	Die bedingte Gegenseitige Information, die $X$ über $Y$ gibt, gegeben $Z$ ist 
+	
+	\begin{align*}
+	I(X;Y|Z) &= H(XZ) + H(YZ)- H(XYZ) - H(Z)
+	\end{align*}
+	
+	Am besten erklärt man sich dies Intuitiv durch die Regel $I(X;Y) = H(X) + H(Y) - H(XY)$ wobei man immer auf $Z$ bedingt und dann auflöst.
+	
+\end{defn}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{overviewChpt2}
+	\caption{Übersicht (Quelle: Information und Kommunikation Prof. U. Maurer)}
+	\label{fig:overviewchpt2}
+\end{figure}
 
 
 \section{Quellcodierung}
@@ -310,7 +346,6 @@ Wir erweitern nun den Code $C$ zu einem Code $C^*$ für welchen $C^*(x_1 \ldots 
 \end{defn}
 
 
-\TODO{understand the proof of the following theorem}
 
 \begin{thm}{Minimale Länge eines präfixfreien Codes}
 Die erwartete Länge jedes präfixfreien Codes $C: X(\Omega) \to \{0,1\}^*$ erfüllt $L_C \geq H(X)$. Um $L_C = H(X)$ zu erreichen muss $p_i = 2^{-l_i}$ für alle $i$ mit $l_i \in \N$ sein.
@@ -589,6 +624,11 @@ Wir definieren die Rate $R$ eines Codes als
 	Eine Abbildung $\hat{s}:\mathcal{Y}^N \to \{0,\ldots,M\}$ nennen wir Dekodierer. Dabei dekodiert sie ein empfangenen String in ein Codewort.
 \end{defn}
 
+
+\begin{defn}{MAP Dekodierer}
+Eine Funktion $$g_{MAP}(y) \in \operatorname{argmax}_{x\in \mathcal{X}} P_{X\mid Y}(x,y)$$ nennen wir einen Maximum A Posteriori-Decodierer.
+\end{defn}
+
 \begin{defn}{Blockfehlerwahrscheinlichkeit}
 	Für einen $(M,N)-Code$ und einen Dekodierer $\hat{s}$ sowie $s\in \{0,\ldots,M\}$ definieren wir die Blockfehlerwahrscheinlichkeit als
 	
@@ -653,7 +693,7 @@ Wir können also einen $(M,N)$-Code finden mit Rate $R = \frac{\log M }{N} \geq 
 \textbf{Beweisskizze}
 \begin{enumerate}
 \item Wähle zufälligen Code. Dekodiere immer so dass $x$ gemeinsam typisch mit erhaltenem $y$. Nach gemeinsamem AEP geht Chance für Dekodierfehler nach 0, wenn $N \to \infty$.
-\item \TODO{todo}
+\item Nutze Fano Ungleichung und Markov Kette um Rate von oben zu beschränken.
 \end{enumerate}
 
 \begin{thm}{Fano Ungleichung}
@@ -669,9 +709,9 @@ Wir können also einen $(M,N)$-Code finden mit Rate $R = \frac{\log M }{N} \geq 
 
 
 
-\TODO{fill in missing parts}
+\textbf{Fehlerbehaftete Kommunikatin oberhalb der Kapazität}
 
-
+Wenn wir längere Blöcke auf kürzere Codewörter mappen und dabei Fehler und Verluste in Kauf nehmen, so können wir mir Rate $R\approx \frac{C}{1-H_2(q)}$ kommunizieren, wobei $q$ die Bitfehlerwahrscheinlichkeit ist, die wir in Kauf nehmen möchten.
 
 
 \section{Grundlagen der Codierungstheorie}
@@ -731,20 +771,69 @@ Dabei bilden die Spalten von $\mathbf{G}^T$ eine Basis von $\C$. Dabei muss $\ma
 	Nach Konstruktion von $\mathbf{G}$ gilt $d_{min}(\C) = 3$. Nach MacKay ist dies ein $(7,4)$ Hamming-Code während Thomas \& Cover dies einen $(2^4,7)$ Hamming-Code nennen würden.
 \end{defn}
 
-\begin{thm}{Syndrom-Dkodierung linearer Codes}
+\begin{thm}{Syndrom-Dekodierung linearer Codes}
 	Wenn wir $\mathbf{y = c+e}\in F_2^N$ empfangen, so nennen wir 
 	
 	\begin{align*}
 		\sigma = \mathbf{H\cdot (c+e)} = \mathbf{H\cdot c + H \cdot e} = \mathbf{H \cdot e} 
 	\end{align*}
-	das für den Fehlerterm $\mathbf{e}$ charakteristische Syndrom. Das Syndrom wird nach der Regel $\mathbf{e} = \operatorname{argmin}_{\mathbf{e}\in \mathbb{F}_2^N, \mathbf{He}=\sigma}w_H(e)$  geschätzt,
-	 
+	das für den Fehlerterm $\mathbf{e}$ charakteristische Syndrom. Das Syndrom wird nach der Regel $\mathbf{e} = \operatorname{argmin}_{\mathbf{e}\in \mathbb{F}_2^N, \mathbf{He}=\sigma}w_H(e)$  geschätzt.
 \end{thm}
 
+Dabei gibt es für jedes Syndrom $\sigma$ mehrere mögliche Fehlerterme. Wir interessieren uns aber für das $\sigma$ mit kleinstem Gewicht ($\rightarrow$ die kleinste Anzahl Bitflips). Bei einigen dieser Klassen haben wir nur Fehler mit 2 oder mehr Flips $\rightarrow$ dort können wir nur noch den Fehler erkennen aber nicht mehr korrigieren.
 
 
-\subsection{Reed-Solomon Codes}
+\begin{defn}{Perfekte Codes}
+	Sei $\C \subset \mathbb{F}_2^N$ ein Code mit Minimaldistanz $d_{min}$ und $t = \lfloor \frac{d_{min} -1}{2} \rfloor$. Der Code $\C$ ist perfekt falls 
+	
+	\begin{align*}
+		\mathbb{F}_2^N = \bigcup_{c\in \C} B_t(c)
+	\end{align*}
+	In Worten: Falls jedes $x\in\mathbb{F}_2^N$ in genau einem Ball $B_t(c)$ enthalten ist.
+\end{defn}
 
+In Praxis gibt es nur selten perfekte Codes. Die einzig bekannten perfekten Codes über $\mathbb{F}_2$ sind: Hamming Codes, Wiederholcodes mit ungeradem $N$, binärer $(2^{12},23)$-Golay Code.
+
+\begin{defn}{Maximum A Posteriori-Dekodierer}
+	Funktionen $g_{MAP} : \mathcal{Y}\to \C$ mit der Eigenschaft 
+	
+	\begin{align*}
+		g_{MAP}(y) \in \operatorname{argmax}_{x\in \X} P_{X|Y} (x,y)
+	\end{align*}
+	nennen wir Maximum A Posteriori-Dekodierer. Diese haben die Eigenschaft, dass $\overline{X} = g_{MAP}(Y)$ eine möglichst gzte Abschätzung von $X$ ist, respektive $P_e = P[\overline{X}\neq X]$ möglichst klein ist.
+\end{defn}
+
+
+\section{Reed-Solomon Codes}
+
+\begin{defn}{Diskrete Fouriertransformation}
+	Sei $\alpha \in \mathbb{F}_q$ ein Element der Ordnung $N = q-1$ ($\alpha^q = 1$). Die zugehörige diskrete Fouriertransformation ist die lineare Abbildung $\F_\alpha$ die $\vec{v} = (v_0,\ldots,v_{N-1})$ auf $\vec{w} = (w_0,\ldots,w_{N-1})$ abbildet mit 
+	\begin{align*}
+		w_i &= \sum_{i=0}^{N-1} \alpha^{ij} v_j
+	\end{align*}
+	Analog dazu ist die inverse Fouriertransformation $F_\alpha^{-1}$ definiert als 
+	\begin{align*}
+		v_i &= - \sum_{j=0}^{N-1} \alpha^{-ij}w_j
+	\end{align*}
+\end{defn}
+Man kann das ganze auch als Polynom $p_v(x) = v_0 + v_1x^1 + \ldots + v_{N-1}x^{N-1}$ interpretieren wobei dann $w_i = p_v(\alpha^i)$ und $v_i = -p_w(\alpha^{-i})$.
+
+\begin{defn}{Reed-Solomon Codes}
+	Für $\alpha\in \mathbb{F}_q$ ein Element der Ordnung $N=q-1$ und $t<\frac{N}{2}$, so ist der zugehörige Reed-Solomon Code der lineare $(q^K,N)$-Code (mit $K=N-2t$) dessen Codewörter alle $c\in \mathbb{F}_q^N$ mit 
+	\begin{align*}
+		\F_\alpha (c) = (0,\ldots,0,w_{2t},\ldots,w_{N-1})
+	\end{align*}
+	wobei die ersten $2t$ Einträge 0 sind.
+\end{defn}
+
+
+\section{Themen der Vorlesung die hier fehlen}
+
+\begin{itemize}
+	\item Polar Codes
+	\item -
+	\item -
+\end{itemize}
 
 
 
